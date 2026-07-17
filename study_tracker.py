@@ -16,7 +16,7 @@ FIELDS = [
 
 
 def ensure_data_file() -> None:
-    """Create the data folder and CSV file when they do not exist."""
+    """Create the data folder and CSV file if they do not exist."""
 
     DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
 
@@ -38,22 +38,18 @@ def get_valid_number(
     minimum: int,
     maximum: int | None = None,
 ) -> int:
-    """Ask repeatedly until the user enters a valid whole number."""
+    """Keep asking until the user enters a valid whole number."""
 
     while True:
         try:
             value = int(input(prompt))
 
             if value < minimum:
-                print(
-                    f"Enter a number of at least {minimum}."
-                )
+                print(f"Enter a number of at least {minimum}.")
                 continue
 
             if maximum is not None and value > maximum:
-                print(
-                    f"Enter a number no higher than {maximum}."
-                )
+                print(f"Enter a number no higher than {maximum}.")
                 continue
 
             return value
@@ -63,7 +59,7 @@ def get_valid_number(
 
 
 def load_study_records() -> list[dict[str, str]]:
-    """Load all existing study records from the CSV file."""
+    """Load all study records from the CSV file."""
 
     ensure_data_file()
 
@@ -78,7 +74,7 @@ def load_study_records() -> list[dict[str, str]]:
 def save_study_records(
     records: list[dict[str, str]],
 ) -> None:
-    """Write all study records back to the CSV file."""
+    """Save all study records back to the CSV file."""
 
     ensure_data_file()
 
@@ -96,7 +92,7 @@ def save_study_records(
 
 
 def add_topic() -> None:
-    """Ask for a study record and save it to the CSV file."""
+    """Create and save a new study record."""
 
     topic = input("Enter topic name: ").strip()
 
@@ -162,23 +158,17 @@ def list_topics() -> None:
 
     print("\nStudy records")
 
-    for index, record in enumerate(
-        records,
-        start=1,
-    ):
+    for index, record in enumerate(records, start=1):
         print(
             f"{index}. {record['topic_name']} | "
-            f"confidence: "
-            f"{record['confidence_score']}/5 | "
-            f"minutes: "
-            f"{record['minutes_studied']} | "
-            f"next revision: "
-            f"{record['next_revision_date']}"
+            f"confidence: {record['confidence_score']}/5 | "
+            f"minutes: {record['minutes_studied']} | "
+            f"next revision: {record['next_revision_date']}"
         )
 
 
 def update_confidence() -> None:
-    """Update the confidence score for one saved record."""
+    """Update the confidence score for a saved record."""
 
     records = load_study_records()
 
@@ -201,9 +191,7 @@ def update_confidence() -> None:
     )
 
     selected_record = records[record_number - 1]
-    selected_record["confidence_score"] = str(
-        new_confidence
-    )
+    selected_record["confidence_score"] = str(new_confidence)
 
     save_study_records(records)
 
@@ -214,7 +202,7 @@ def update_confidence() -> None:
 
 
 def recommend_topic() -> None:
-    """Recommend the topic with the lowest confidence score."""
+    """Recommend the topic with the lowest confidence."""
 
     records = load_study_records()
 
@@ -226,24 +214,13 @@ def recommend_topic() -> None:
 
     for record in records:
         try:
-            confidence = int(
-                record["confidence_score"]
-            )
-            valid_records.append(
-                (record, confidence)
-            )
-        except (
-            ValueError,
-            TypeError,
-            KeyError,
-        ):
+            confidence = int(record["confidence_score"])
+            valid_records.append((record, confidence))
+        except (ValueError, TypeError, KeyError):
             continue
 
     if not valid_records:
-        print(
-            "No records contain a valid "
-            "confidence score."
-        )
+        print("No records contain a valid confidence score.")
         return
 
     weakest_record, weakest_confidence = min(
@@ -252,15 +229,13 @@ def recommend_topic() -> None:
     )
 
     print(
-        f"Revise "
-        f"{weakest_record['topic_name']} next. "
-        f"Current confidence: "
-        f"{weakest_confidence}/5."
+        f"Revise {weakest_record['topic_name']} next. "
+        f"Current confidence: {weakest_confidence}/5."
     )
 
 
 def show_menu() -> None:
-    """Display the main menu."""
+    """Display the application menu."""
 
     print(
         "\nAI Study Skills Coach\n"
@@ -273,16 +248,14 @@ def show_menu() -> None:
 
 
 def main() -> None:
-    """Run the command-line study tracker."""
+    """Run the study tracker."""
 
     ensure_data_file()
 
     while True:
         show_menu()
 
-        choice = input(
-            "Choose an option: "
-        ).strip()
+        choice = input("Choose an option: ").strip()
 
         if choice == "1":
             add_topic()
@@ -296,9 +269,7 @@ def main() -> None:
             print("Goodbye.")
             break
         else:
-            print(
-                "Choose a number from 1 to 5."
-            )
+            print("Choose a number from 1 to 5.")
 
 
 if __name__ == "__main__":
